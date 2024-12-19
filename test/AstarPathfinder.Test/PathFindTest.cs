@@ -40,9 +40,6 @@ public class PathFindTest(ITestOutputHelper testOutputHelper)
                 nodeArray[row, col] = new Node(index, wight, isBan);
             }
         }
-        
-        var start = new Vector2Int(0, 0);
-        var goal = new Vector2Int(rows - 1, cols - 1);
 
         var finder = new Pathfinder(nodeArray);
         var destination = new Vector2Int[100];
