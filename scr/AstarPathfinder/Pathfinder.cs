@@ -28,14 +28,14 @@ public class Pathfinder
     public int FindPath(Node from, Node to, ref Vector2Int[] buffer)
     {
         using var openList = new TempList<Node>(buffer.Length);
-        openList.Add(from);
-        from.State = NodeState.Closed;
+        ref var current = ref grid[from.Index.x, from.Index.y];
+        openList.Add(current);
+        current.State = NodeState.Closed;
+        current.ParentIndex = null;
         
         // 隣接ノードバッファー
         var adjacentBuffer =  ArrayPool<Vector2Int>.Shared.Rent(8);
 
-        ref var current = ref from;
-        current.Parent = null;
         var currentCost = 0;
 
         while(true)
@@ -51,7 +51,7 @@ public class Pathfinder
                 if(node.State is NodeState.None && !node.IsBan)
                 {
                     node.State = NodeState.Open;
-                    node.Parent = new(current);
+                    node.ParentIndex = current.Index;
                     // 開始距離(currentCost) + ヒューリスティック関数での距離 + Weight を足してスコアとする
                     node.Score = currentCost + calculable.Calculate(current.Index, to.Index) + node.Wight;
                     openList.Add(node);
@@ -72,7 +72,7 @@ public class Pathfinder
         }
 
         var count = 0;
-        while(current.Parent is not null)
+        while(current.ParentIndex is not null)
         {
             if(buffer.Length <= count)
             {
@@ -81,7 +81,8 @@ public class Pathfinder
                 Array.Copy(buffer, nowBuffer, buffer.Length);
             }
             buffer[count] = current.Index;
-            current = current.Parent.Node;
+            var index = current.ParentIndex.Value;
+            current = grid[index.x, index.y];
             count++;
         }
 
@@ -155,7 +156,7 @@ public class Pathfinder
             for(var y = 0; y < height; y++)
             {
                 ref var n = ref grid[x, y];
-                n.Parent = null;
+                n.ParentIndex = null;
                 n.State = NodeState.None;
                 n.Score = 0;
             }

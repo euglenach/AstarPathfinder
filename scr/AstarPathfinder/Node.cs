@@ -7,14 +7,14 @@ namespace AstarPathfinder;
 public struct Node : IEquatable<Node>
 {
     public Vector2Int Index;
-    public float Wight;
+    public int Wight;
     public bool IsBan;
     
-    public NodeRef? Parent;
+    public Vector2Int? ParentIndex;
     public NodeState State;
     public float Score;
 
-    public Node(Vector2Int index, float wight, bool isBan)
+    public Node(Vector2Int index, int wight, bool isBan)
     {
         Index = index;
         Wight = wight;

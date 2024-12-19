@@ -2,15 +2,8 @@
 
 namespace AstarPathfinder.Test;
 
-public class PathFindTest
+public class PathFindTest(ITestOutputHelper testOutputHelper)
 {
-    private readonly ITestOutputHelper testOutputHelper;
-
-    public PathFindTest(ITestOutputHelper testOutputHelper)
-    {
-        this.testOutputHelper = testOutputHelper;
-    }
-
     [Fact]
     public void Test()
     {
