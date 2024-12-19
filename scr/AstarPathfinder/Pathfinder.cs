@@ -77,8 +77,9 @@ public class Pathfinder
             if(buffer.Length <= count)
             {
                 // ??
-                var nowBuffer = new Vector2Int[currentCost];
-                Array.Copy(buffer, nowBuffer, buffer.Length);
+                var newBuffer = new Vector2Int[currentCost];
+                Array.Copy(buffer, newBuffer, buffer.Length);
+                buffer = newBuffer;
             }
             buffer[count] = current.Index;
             var index = current.ParentIndex.Value;
