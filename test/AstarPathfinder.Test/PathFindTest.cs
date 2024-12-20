@@ -1,4 +1,5 @@
-﻿using Xunit.Abstractions;
+﻿using FluentAssertions;
+using Xunit.Abstractions;
 
 namespace AstarPathfinder.Test;
 
@@ -10,12 +11,12 @@ public class PathFindTest(ITestOutputHelper testOutputHelper)
         var nodeSource = new [,]
         {
             {0,1,0,0,0,0,0,0,0,0},
-            {0,1,0,0,0,0,0,0,0,0},
-            {0,1,0,0,0,0,0,0,0,0},
-            {0,1,0,0,0,0,0,0,0,0},
-            {0,1,0,0,0,0,0,0,0,0},
-            {0,1,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0},
+            {0,1,0,0,0,0,0,0,1,0},
+            {0,1,0,0,0,0,0,0,1,0},
+            {0,1,0,0,0,0,0,0,1,0},
+            {0,1,0,0,0,0,0,0,1,0},
+            {0,1,0,0,0,0,0,0,1,0},
+            {0,0,0,0,0,0,0,0,1,0},
         };
         
         var rows = nodeSource.GetLength(0);
@@ -50,5 +51,8 @@ public class PathFindTest(ITestOutputHelper testOutputHelper)
         {
             testOutputHelper.WriteLine($"({pos.x}, {pos.y})");
         }
+
+        nodeArray[0, 0].Should().Be(destination[0]);
+        nodeArray[rows - 1, cols - 1].Should().Be(destination[count - 1]);
     }
 }
