@@ -83,7 +83,10 @@ public class Pathfinder
                 Array.Copy(buffer, newBuffer, buffer.Length);
                 buffer = newBuffer;
             }
-            buffer[count] = current.Index;
+
+            // 受け取った座標とxyが逆転しているので反転して返す
+            var (x, y) = (current.Index.y, current.Index.x);
+            buffer[count] = new(x, y);
             var index = current.ParentIndex.Value;
             current = grid[index.x, index.y];
             count++;
