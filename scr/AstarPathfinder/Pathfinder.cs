@@ -59,7 +59,9 @@ public class Pathfinder
             }
             
             // 次の最短ルートとなるノードを取得
-            current = ref GetMinCostNode(openList.Span);
+            ref var c = ref GetMinCostNode(openList.Span, out var isSuccess);
+            if(!isSuccess) break;
+            current = ref c;
 
             // 現在のノードを閉じる
             current.State = NodeState.Closed;
@@ -91,8 +93,10 @@ public class Pathfinder
         return count;
     }
 
-    private ref Node GetMinCostNode(Span<Node> openNodeList)
+    private ref Node GetMinCostNode(Span<Node> openNodeList, out bool isSuccess)
     {
+        // 1個も対象のノードがなかったらfalseのまま
+        isSuccess = false;
         var minScore = float.MaxValue;
         ref var shortestNode = ref openNodeList[0];
 
@@ -112,6 +116,8 @@ public class Pathfinder
                 if(shortestNode.Wight <= node.Wight) continue;
                 shortestNode = ref node;
             }
+
+            isSuccess = true;
         }
 
         return ref shortestNode;
