@@ -3,9 +3,11 @@
 using AstarPathfinder.Benchmark;
 using BenchmarkDotNet.Running;
 
-var switcher = new BenchmarkSwitcher([
-    typeof(Pathfinding)
-]);
+// var switcher = new BenchmarkSwitcher([
+//     typeof(Pathfinding)
+// ]);
+//
+// args = new[] { "0" };
+// switcher.Run(args);
 
-args = new[] { "0" };
-switcher.Run(args);
+var summary = BenchmarkRunner.Run<Pathfinding>();
