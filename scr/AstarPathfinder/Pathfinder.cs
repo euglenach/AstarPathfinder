@@ -125,10 +125,11 @@ public class Pathfinder
 
     bool IsAllClosed(TempList<Node> list)
     {
+        var span = list.Span;
         // うーんSIMDにできないか そもそもTempListをRemoveできるように改良すべきか
-        for(var i = 0; i < list.Count; i++)
+        foreach(var node in span)
         {
-            if(list[i].State is not NodeState.Closed) return false;
+            if(node.State is not NodeState.Closed) return false;
         }
 
         return true;
