@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using System.Runtime.InteropServices;
 #if USING_UNITY_ENGINE_SHIMS
 using UnityEngine;
 #endif
@@ -161,15 +162,25 @@ public class Pathfinder
 
     public void Reset()
     {
-        for(var x = 0; x < width; x++)
+        var span = MemoryMarshal.CreateSpan(ref grid[0, 0], grid.Length);
+        
+        for(var i = 0; i < span.Length; i++)
         {
-            for(var y = 0; y < height; y++)
-            {
-                ref var n = ref grid[x, y];
-                n.ParentIndex = null;
-                n.State = NodeState.None;
-                n.Score = 0;
-            }
+            ref var n = ref span[i];
+            n.ParentIndex = null;
+            n.State = default;
+            n.Score = 0;
         }
+        
+        // for(var x = 0; x < width; x++)
+        // {
+        //     for(var y = 0; y < height; y++)
+        //     {
+        //         ref var n = ref grid[x, y];
+        //         n.ParentIndex = null;
+        //         n.State = NodeState.None;
+        //         n.Score = 0;
+        //     }
+        // }
     }
 }

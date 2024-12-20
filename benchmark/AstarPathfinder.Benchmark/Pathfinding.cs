@@ -106,9 +106,15 @@ public class Pathfinding
     }
     
     [Benchmark]
-    public void Normal()
+    public void FindPathOnly()
     {
         finder.FindPath(nodes[0, 0], nodes[width - 1, height - 1], ref destinationBuffer);
+    }
+    
+    [Benchmark]
+    public void Find()
+    {
         finder.Reset();
+        finder.FindPath(nodes[0, 0], nodes[width - 1, height - 1], ref destinationBuffer);
     }
 }
