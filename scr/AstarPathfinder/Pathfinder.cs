@@ -44,9 +44,8 @@ public class Pathfinder
             var adjacentCount = GetAdjacentNodes(ref current, adjacentBuffer);
             
             // 隣接ノードをOpen状態にする
-            for(var i = 0; i < adjacentCount; i++)
+            foreach(var index in adjacentBuffer.AsSpan(0, adjacentCount))
             {
-                var index = adjacentBuffer[i];
                 ref var node = ref grid[index.x, index.y];
                 if(node.State is NodeState.None && !node.IsBan)
                 {
