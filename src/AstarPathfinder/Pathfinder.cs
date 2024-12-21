@@ -9,8 +9,8 @@ namespace AstarPathfinder;
 public class Pathfinder(Node[,] grid, ICalculableHeuristicCost? calculable = null)
 {
     private readonly ICalculableHeuristicCost calculable = calculable ?? Euclidean.Default;
-    private readonly int width = grid.GetLength(0);
-    private readonly int height = grid.GetLength(1);
+    public readonly int Width = grid.GetLength(0);
+    public readonly int Height = grid.GetLength(1);
 
     // 隣接ノードを取る用
     private static readonly Vector2Int[] deltas = [new (-1, -1), new (0, -1), new (1, -1), new (-1, 0), new (1, 0), new (-1, 1), new (0, 1), new (1, 1)];
@@ -31,7 +31,7 @@ public class Pathfinder(Node[,] grid, ICalculableHeuristicCost? calculable = nul
         while(true)
         {
             currentCost++;
-            var adjacentCount = GetAdjacentNodes(width, height, current.Index, adjacentBuffer);
+            var adjacentCount = GetAdjacentNodes(Width, Height, current.Index, adjacentBuffer);
 
             // 隣接ノードをOpen状態にする
             foreach(var index in adjacentBuffer[..adjacentCount])
