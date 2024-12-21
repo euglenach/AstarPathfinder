@@ -50,11 +50,11 @@ internal ref struct TempList<T>
     {
         // ReSharper disable once LocalVariableHidesMember
         var index = this.index;
-        if ((uint)i >= (uint)index)
+        if((uint)i >= (uint)index)
         {
             ThrowArgumentOutOfRangeException(index, i);
         }
-        if (i < index - 1)
+        if(i < index - 1)
         {
             array[i] = array[index - 1];
         }
@@ -65,7 +65,7 @@ internal ref struct TempList<T>
     {
         get
         {
-            if (i < 0 || i >= index)
+            if(i < 0 || i >= index)
                 ThrowArgumentOutOfRangeException(index, i);
             return ref array[i];
         }

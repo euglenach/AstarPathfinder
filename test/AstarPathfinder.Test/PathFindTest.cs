@@ -3,11 +3,18 @@ using Xunit.Abstractions;
 
 namespace AstarPathfinder.Test;
 
-public class PathFindTest(ITestOutputHelper testOutputHelper)
+public class PathFindTest
 {
-    [Fact]
-    public void Test()
+    private ITestOutputHelper testOutputHelper;
+    private Pathfinder finder;
+    private Node[,] nodeArray;
+    private int rows, cols;
+    private Vector2Int[] destination = new Vector2Int[100];
+
+    public PathFindTest(ITestOutputHelper testOutputHelper)
     {
+        this.testOutputHelper = testOutputHelper;
+        
         var nodeSource = new [,]
         {
             {0,0,0,0,0,0,0,0,0,0},
@@ -19,10 +26,10 @@ public class PathFindTest(ITestOutputHelper testOutputHelper)
             {0,0,0,0,0,0,0,0,1,0},
         };
         
-        var rows = nodeSource.GetLength(0);
-        var cols = nodeSource.GetLength(1);
+        rows = nodeSource.GetLength(0);
+        cols = nodeSource.GetLength(1);
         
-        var nodeArray = new Node[rows, cols];
+        nodeArray = new Node[rows, cols];
 
         for (int row = 0; row < rows; row++)
         {
@@ -42,14 +49,30 @@ public class PathFindTest(ITestOutputHelper testOutputHelper)
             }
         }
 
-        var finder = new Pathfinder(nodeArray);
-        var destination = new Vector2Int[100];
-        
+        finder = new Pathfinder(nodeArray);
+    }
+    
+    [Fact]
+    public void Test()
+    {
+        var first = TestCore();
+        var second = TestCore();
+
+        first.Should().Equal(second);
+    }
+
+    Vector2Int[] TestCore()
+    {
+        testOutputHelper.WriteLine("====================Start====================");
         var count = finder.FindPath(nodeArray[0, 0], nodeArray[rows - 1, cols - 1], ref destination);
 
+        var dest = destination.Take(count).ToArray();
         foreach(var pos in destination.Take(count))
         {
             testOutputHelper.WriteLine($"({pos.x}, {pos.y})");
         }
+        
+        finder.Reset();
+        return dest;
     }
 }
