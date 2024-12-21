@@ -8,7 +8,7 @@ namespace AstarPathfinder;
 
 public class Pathfinder(Node[,] grid, ICalculableHeuristicCost? calculable = null)
 {
-    private readonly ICalculableHeuristicCost calculable = calculable ?? new Euclidean();
+    private readonly ICalculableHeuristicCost calculable = calculable ?? Euclidean.Default;
     private readonly int width = grid.GetLength(0);
     private readonly int height = grid.GetLength(1);
 
