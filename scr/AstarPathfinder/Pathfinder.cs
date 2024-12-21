@@ -10,25 +10,24 @@ namespace AstarPathfinder;
 public class Pathfinder
 {
     private readonly ICalculableHeuristicCost calculable;
-    
+
     private Node[,] grid;
     private readonly int width;
     private readonly int height;
-    
+
     // 隣接ノードを取る用
     private static readonly　int[] dx = [-1, 0, 1, -1, 1, -1, 0, 1];
     private static readonly　int[] dy = [-1, -1, -1, 0, 0, 1, 1, 1];
-    
+
     public Pathfinder(Node[,] grid, ICalculableHeuristicCost? calculable = null)
     {
         this.grid = grid;
         width = grid.GetLength(0);
         height = grid.GetLength(1);
-        this.calculable = calculable ??  new Euclidean();
+        this.calculable = calculable ?? new Euclidean();
     }
-    
-   
-    
+
+
     public int FindPath(Node from, Node to, ref Vector2Int[] buffer)
     {
         using var openList = new TempList<Node>(buffer.Length);
@@ -36,22 +35,22 @@ public class Pathfinder
         openList.Add(currentRef);
         currentRef.State = NodeState.Closed;
         currentRef.ParentIndex = null;
-         var current =  currentRef;
+        var current = currentRef;
         // 隣接ノードバッファー
-        var adjacentBuffer =  (stackalloc Vector2Int[8]);
+        var adjacentBuffer = (stackalloc Vector2Int[8]);
 
         var currentCost = 0;
 
-        while(true)
+        while (true)
         {
             currentCost++;
             var adjacentCount = GetAdjacentNodes(current.Index, adjacentBuffer);
-            
+
             // 隣接ノードをOpen状態にする
-            foreach(var index in adjacentBuffer[..adjacentCount])
+            foreach (var index in adjacentBuffer[..adjacentCount])
             {
                 ref var node = ref grid[index.x, index.y];
-                if(node.State is NodeState.None && !node.IsBan)
+                if (node.State is NodeState.None && !node.IsBan)
                 {
                     node.State = NodeState.Open;
                     node.ParentIndex = current.Index;
@@ -60,36 +59,36 @@ public class Pathfinder
                     openList.Add(node);
                 }
             }
-            
+
             // 次の最短ルートとなるノードを取得
-            ref var c = ref GetMinCostNode(openList.Span, out var isSuccess,out var minIndex);
-            if(!isSuccess) break;
-            
+            ref var c = ref GetMinCostNode(openList.Span, out var isSuccess, out var minIndex);
+            if (!isSuccess) break;
+
             // 現在のノードを閉じる
             c.State = NodeState.Closed;
-            current =  c;
+            current = c;
 
             openList.RemoveAtSwapBack(minIndex);
             // ゴールに到達したかオープンリストが空か
-            if(current.Equals(to) || openList.Count == 0)
+            if (current.Equals(to) || openList.Count == 0)
             {
                 break;
             }
         }
-        
-        
-        current =grid[current.Index.x, current.Index.y];
+
+
+        current = grid[current.Index.x, current.Index.y];
         var count = 0;
-        
-        while(current.ParentIndex is not null)
+
+        while (current.ParentIndex is not null)
         {
-            if(buffer.Length <= count)
+            if (buffer.Length <= count)
             {
                 Array.Resize(ref buffer, buffer.Length * 2);
             }
 
             // 受け取った座標とxyが逆転しているので反転して返す
-            buffer[count] = new(current.Index.y,  current.Index.x);
+            buffer[count] = new(current.Index.y, current.Index.x);
             var index = current.ParentIndex.Value;
             current = grid[index.x, index.y];
             count++;
@@ -98,32 +97,32 @@ public class Pathfinder
         return count;
     }
 
-    private ref Node GetMinCostNode(Span<Node> openNodeList, out bool isSuccess,out int minIndex)
+    private ref Node GetMinCostNode(Span<Node> openNodeList, out bool isSuccess, out int minIndex)
     {
         // 1個も対象のノードがなかったらfalseのまま
         isSuccess = false;
         var minScore = float.MaxValue;
         ref var shortestNode = ref openNodeList[0];
         minIndex = 0;
-        for(var i = 0; i < openNodeList.Length; i++)
+        for (var i = 0; i < openNodeList.Length; i++)
         {
             ref var node = ref openNodeList[i];
-            if(node.State is not NodeState.Open) continue;
+            if (node.State is not NodeState.Open) continue;
             // コストが少ないものを記録していく
-            if(minScore > node.Score)
+            if (minScore > node.Score)
             {
                 minScore = node.Score;
                 shortestNode = ref node;
                 minIndex = i;
             }
             // スコアが同じ場合はWeightを見る
-            else if(node.Score  <  minScore + float.Epsilon * 8)
+            else if (node.Score < minScore + float.Epsilon * 8)
             {
-                if(shortestNode.Wight <= node.Wight) continue;
+                if (shortestNode.Wight <= node.Wight) continue;
                 shortestNode = ref node;
                 minIndex = i;
             }
-            
+
             isSuccess = true;
         }
 
@@ -131,24 +130,23 @@ public class Pathfinder
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-
     private int GetAdjacentNodes(Vector2Int index, Span<Vector2Int> adjacentIndexes)
     {
         var count = 0;
-        
+
         var x = index.x;
         var y = index.y;
         var tdx = dx;
         var w = width;
         var h = height;
-        for(var i = 0; i < tdx.Length; i++)
+        for (var i = 0; i < tdx.Length; i++)
         {
             var nx = x + tdx[i];
             var ny = y + dy[i];
 
             // 境界値チェック
-            if( (uint)nx >= (uint)w || (uint)ny >= (uint)h) continue;
-            
+            if ((uint)nx >= (uint)w || (uint)ny >= (uint)h) continue;
+
             adjacentIndexes[count] = new(nx, ny);
             count++;
         }
@@ -159,15 +157,15 @@ public class Pathfinder
     public void Reset()
     {
         var span = MemoryMarshal.CreateSpan(ref grid[0, 0], grid.Length);
-        
-        for(var i = 0; i < span.Length; i++)
+
+        for (var i = 0; i < span.Length; i++)
         {
             ref var n = ref span[i];
             n.ParentIndex = null;
             n.State = default;
             n.Score = 0;
         }
-        
+
         // for(var x = 0; x < width; x++)
         // {
         //     for(var y = 0; y < height; y++)
