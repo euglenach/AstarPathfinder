@@ -24,7 +24,7 @@ public class Pathfinder
         this.grid = grid;
         width = grid.GetLength(0);
         height = grid.GetLength(1);
-        this.calculable ??=  new Euclidean();
+        this.calculable = calculable ??  new Euclidean();
     }
     
    
