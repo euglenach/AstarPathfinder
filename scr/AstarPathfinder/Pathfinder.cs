@@ -17,7 +17,7 @@ public class Pathfinder
 
     // 隣接ノードを取る用
     
-    private static readonly Vector2Int[] dxdys = [new (-1, -1), new (0, -1), new (1, -1), new (-1, 0), new (1, 0), new (-1, 1), new (0, 1), new (1, 1)];
+    private static readonly Vector2Int[] deltas = [new (-1, -1), new (0, -1), new (1, -1), new (-1, 0), new (1, 0), new (-1, 1), new (0, 1), new (1, 1)];
 
     public Pathfinder(Node[,] grid, ICalculableHeuristicCost? calculable = null)
     {
@@ -136,11 +136,10 @@ public class Pathfinder
 
         var x = index.x;
         var y = index.y;
-        var adjacentDelata = dxdys;
-        foreach (var dxdy in adjacentDelata)
+        foreach (var delta in deltas)
         {
-            var nx = x + dxdy.x;
-            var ny = y + dxdy.y;
+            var nx = x + delta.x;
+            var ny = y + delta.y;
 
             // 境界値チェック
             if ((uint)nx >= (uint)width || (uint)ny >= (uint)height) continue;
