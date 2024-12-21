@@ -16,8 +16,8 @@ public class Pathfinder
     private readonly int height;
 
     // 隣接ノードを取る用
-    private static readonly　int[] dx = [-1, 0, 1, -1, 1, -1, 0, 1];
-    private static readonly　int[] dy = [-1, -1, -1, 0, 0, 1, 1, 1];
+    
+    private static readonly Vector2Int[] dxdys = [new (-1, -1), new (0, -1), new (1, -1), new (-1, 0), new (1, 0), new (-1, 1), new (0, 1), new (1, 1)];
 
     public Pathfinder(Node[,] grid, ICalculableHeuristicCost? calculable = null)
     {
@@ -44,7 +44,7 @@ public class Pathfinder
         while (true)
         {
             currentCost++;
-            var adjacentCount = GetAdjacentNodes(current.Index, adjacentBuffer);
+            var adjacentCount = GetAdjacentNodes(width, height, current.Index, adjacentBuffer);
 
             // 隣接ノードをOpen状態にする
             foreach (var index in adjacentBuffer[..adjacentCount])
@@ -130,22 +130,20 @@ public class Pathfinder
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private int GetAdjacentNodes(Vector2Int index, Span<Vector2Int> adjacentIndexes)
+    private static int GetAdjacentNodes(int width, int height, Vector2Int index, Span<Vector2Int> adjacentIndexes)
     {
         var count = 0;
 
         var x = index.x;
         var y = index.y;
-        var tdx = dx;
-        var w = width;
-        var h = height;
-        for (var i = 0; i < tdx.Length; i++)
+        var adjacentDelata = dxdys;
+        foreach (var dxdy in adjacentDelata)
         {
-            var nx = x + tdx[i];
-            var ny = y + dy[i];
+            var nx = x + dxdy.x;
+            var ny = y + dxdy.y;
 
             // 境界値チェック
-            if ((uint)nx >= (uint)w || (uint)ny >= (uint)h) continue;
+            if ((uint)nx >= (uint)width || (uint)ny >= (uint)height) continue;
 
             adjacentIndexes[count] = new(nx, ny);
             count++;
