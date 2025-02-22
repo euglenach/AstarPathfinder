@@ -137,24 +137,11 @@ public class Pathfinder(Node[,] grid, ICalculableHeuristicCost? calculable = nul
     public void Reset()
     {
         var span = MemoryMarshal.CreateSpan(ref grid[0, 0], grid.Length);
-
-        for(var i = 0; i < span.Length; i++)
+        foreach(ref var n in span)
         {
-            ref var n = ref span[i];
             n.ParentIndex = null;
             n.State = default;
             n.Score = 0;
         }
-
-        // for(var x = 0; x < width; x++)
-        // {
-        //     for(var y = 0; y < height; y++)
-        //     {
-        //         ref var n = ref grid[x, y];
-        //         n.ParentIndex = null;
-        //         n.State = NodeState.None;
-        //         n.Score = 0;
-        //     }
-        // }
     }
 }
