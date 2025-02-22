@@ -42,7 +42,7 @@ public class Pathfinder(Node[,] grid, ICalculableHeuristicCost? calculable = nul
                     node.State = NodeState.Open;
                     node.ParentIndex = current.Index;
                     // 開始距離(currentCost) + ヒューリスティック関数での距離 + Weight を足してスコアとする
-                    node.Score = currentCost + calculable.Calculate(current.Index, to.Index) + node.Wight;
+                    node.Score = currentCost + calculable.Calculate(current.Index, to.Index) + node.Weight;
                     openList.Add(node);
                 }
             }
@@ -103,7 +103,7 @@ public class Pathfinder(Node[,] grid, ICalculableHeuristicCost? calculable = nul
             // スコアが同じ場合はWeightを見る
             else if(node.Score < minScore + float.Epsilon * 8)
             {
-                if(shortestNode.Wight <= node.Wight) continue;
+                if(shortestNode.Weight <= node.Weight) continue;
                 shortestNode = ref node;
                 minIndex = i;
             }
